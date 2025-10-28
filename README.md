@@ -51,12 +51,26 @@ python cluster_interfaces.py --cif_dir $(jq -r .cif_dir config_interface_cluster
 
 输出内容：`labels.txt`、`metrics.json`、`files.txt`、`tsne.png`（以及可选的 `X.npy`）。
 
+## 最小可复现实例
+- 一键运行（Windows PowerShell）：
+```powershell
+./examples/run_example.ps1
+```
+- 一键运行（Linux/macOS）：
+```bash
+bash examples/run_example.sh
+```
+- 或使用 Python：
+```bash
+python examples/run_minimal_example.py
+```
+脚本会下载少量公开 mmCIF（默认 `examples/cifs/`），并运行 `cluster_interfaces.py` 生成结果（默认 `examples/results/`）。
+
 ## 目录结构
 - `interface_clustering/`：统一的contact map生成、聚类与可视化
 - `protein_clustering/`：模块化的分析、评估、可视化
-- `2STEP/`：两阶段聚类与免疫原性优化示例管线
-- `optimized_protein_clustering_v14.*.py`：单文件版本的迭代实现
-- `Cluster_pipeline_v1.2.py` 等：历史版本与对比脚本
+- `2STEP/`：两阶段聚类与免疫原性优化示例管线（已在本仓库清理为统一入口）
+- `optimized_protein_clustering_v14.*.py`：单文件版本的迭代实现（已清理）
 
 ## 数据与输出
 - 输入：PDB 或 mmCIF 结构目录

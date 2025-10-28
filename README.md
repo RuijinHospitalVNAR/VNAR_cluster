@@ -31,7 +31,28 @@ python -m protein_clustering.pipeline \
 ```
 - 两阶段细化：参考 `2STEP/README_FINE_CLUSTERING.md` 与 `2STEP/run_fine_clustering.*`
 
+## 接口（相互作用界面）聚类统一入口
+使用 contact map 进行复合物界面聚类：
+```bash
+python cluster_interfaces.py \
+  --cif_dir path/to/cifs \
+  --antibody_chain A \
+  --antigen_chains B C \
+  --cutoff 5.0 \
+  --method hdbscan \
+  --out_dir results_interfaces \
+  --save_plots --save_numpy
+```
+或使用配置文件：
+```bash
+python cluster_interfaces.py --cif_dir $(jq -r .cif_dir config_interface_clustering.json)
+```
+配置模板见 `config_interface_clustering.json`。
+
+输出内容：`labels.txt`、`metrics.json`、`files.txt`、`tsne.png`（以及可选的 `X.npy`）。
+
 ## 目录结构
+- `interface_clustering/`：统一的contact map生成、聚类与可视化
 - `protein_clustering/`：模块化的分析、评估、可视化
 - `2STEP/`：两阶段聚类与免疫原性优化示例管线
 - `optimized_protein_clustering_v14.*.py`：单文件版本的迭代实现

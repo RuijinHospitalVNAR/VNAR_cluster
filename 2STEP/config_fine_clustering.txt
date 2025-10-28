@@ -1,0 +1,19 @@
+# AF3精细聚类配置文件
+# 请根据实际情况修改以下路径
+
+# 粗聚类结果文件路径（必需）
+COARSE_RESULTS_FILE=af3_coarse_clustering_results/coarse_clustering_results.pkl
+
+# 原始结构文件目录（必需）
+PDB_DIR=./original_structures
+
+# 粗聚类结构文件夹路径（可选，如果存在则优先使用）
+COARSE_CLUSTERS_DIR=af3_coarse_clustering_results/coarse_clusters
+
+# 输出目录（可选，默认为 af3_fine_clustering_results）
+OUTPUT_DIR=af3_fine_clustering_results
+
+# 并行处理线程数（可选，默认为自动检测）
+N_JOBS=4
+
+# 注意：外部工具路径已在shell脚本中硬编码，如需修改请编辑run_fine_clustering.sh文件

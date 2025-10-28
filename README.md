@@ -1,13 +1,11 @@
-# 预测结构聚类与界面分析工具集
+# 预测结构聚类与界面分析工具集（两段式方案）
 
-本仓库用于对100+以上的大量蛋白复合物结构进行聚类（cluster），以比较不同复合物之间的相互作用界面差异，并提供可复用的脚本与管线。
+本仓库面向对100+以上的大量蛋白复合物结构进行聚类（cluster），以比较不同复合物之间的相互作用界面差异。现统一采用“两段式聚类”：先进行粗聚类（KMeans），再在各粗聚类内部进行细聚类（HDBSCAN）。
 
 ## 功能概览
-- **批量聚类**：支持KMeans、DBSCAN、HDBSCAN、谱聚类等多种方法
-- **降维与可视化**：PCA、t-SNE、UMAP；统一使用自然配色
-- **结构解析**：支持PDB/mmCIF，依赖BioPython
-- **两阶段细化**：提供coarse→fine两阶段聚类脚本
-- **示例与测试**：含`protein_clustering/`模块化实现与`2STEP/`示例管线
+- **两段式聚类**：Coarse(KMeans) → Fine(HDBSCAN)
+- **降维与可视化**：t-SNE 可视化聚类结果（自然配色）
+- **结构解析**：支持 PDB/mmCIF，依赖 BioPython
 
 ## 环境安装
 ```bash
@@ -16,65 +14,41 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## 快速开始
-- 单脚本快速聚类（示例）：
+## 使用方法（两段式统一入口）
 ```bash
-python optimized_protein_clustering_v14.3.py \
-  --input_dir path/to/structures \
-  --ext .cif \
-  --out_dir results
-```
-- 模块化管线：
-```bash
-python -m protein_clustering.pipeline \
-  --config path/to/config.json
-```
-- 两阶段细化：参考 `2STEP/README_FINE_CLUSTERING.md` 与 `2STEP/run_fine_clustering.*`
-
-## 接口（相互作用界面）聚类统一入口
-使用 contact map 进行复合物界面聚类：
-```bash
-python cluster_interfaces.py \
+python two_stage_interfaces.py \
   --cif_dir path/to/cifs \
   --antibody_chain A \
   --antigen_chains B C \
   --cutoff 5.0 \
-  --method hdbscan \
-  --out_dir results_interfaces \
+  --k_coarse 10 \
+  --min_cluster_size 10 \
+  --out_dir results_two_stage \
   --save_plots --save_numpy
 ```
-或使用配置文件：
-```bash
-python cluster_interfaces.py --cif_dir $(jq -r .cif_dir config_interface_clustering.json)
-```
-配置模板见 `config_interface_clustering.json`。
+或使用配置模板 `config_two_stage_interface.json`。
 
-输出内容：`labels.txt`、`metrics.json`、`files.txt`、`tsne.png`（以及可选的 `X.npy`）。
+输出：`labels_coarse.txt`、`labels_fine.txt`、`metrics.json`、`files.txt`、`tsne_coarse.png`、`tsne_fine.png`（以及可选的 `X.npy`）。
 
 ## 最小可复现实例
-- 一键运行（Windows PowerShell）：
+- Windows PowerShell：
 ```powershell
 ./examples/run_example.ps1
 ```
-- 一键运行（Linux/macOS）：
+- Linux/macOS：
 ```bash
 bash examples/run_example.sh
 ```
-- 或使用 Python：
+- Python：
 ```bash
 python examples/run_minimal_example.py
 ```
-脚本会下载少量公开 mmCIF（默认 `examples/cifs/`），并运行 `cluster_interfaces.py` 生成结果（默认 `examples/results/`）。
+脚本会下载少量公开 mmCIF 到 `examples/cifs/`，并运行两段式聚类生成结果 `examples/results/`。
 
 ## 目录结构
-- `interface_clustering/`：统一的contact map生成、聚类与可视化
-- `protein_clustering/`：模块化的分析、评估、可视化
-- `2STEP/`：两阶段聚类与免疫原性优化示例管线（已在本仓库清理为统一入口）
-- `optimized_protein_clustering_v14.*.py`：单文件版本的迭代实现（已清理）
-
-## 数据与输出
-- 输入：PDB 或 mmCIF 结构目录
-- 输出：聚类标签、评估指标、可视化图（PCA/t-SNE/UMAP）
+- `interface_clustering/`：contact map 生成、聚类与可视化
+- `two_stage_interfaces.py`：两段式聚类统一入口
+- `examples/`：最小示例与一键运行脚本
 
 ## 颜色偏好
 绘图默认使用自然配色：`['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']`
